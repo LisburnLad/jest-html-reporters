@@ -1,7 +1,7 @@
 import randomColor from 'randomcolor';
 import type { IReportData } from '../interfaces/ReportData.interface';
 
-import { Card, Col, Row, Typography } from 'antd';
+import { Button, Card, Col, Row, Typography } from 'antd';
 import {
   Bar,
   BarChart,
@@ -48,6 +48,7 @@ const colors = [...new Array(40)].map((d) => randomColor());
 const createMarkup = (text: string) => ({
   __html: text,
 });
+
 
 const CustomTooltip = ({
   active,
@@ -211,6 +212,7 @@ export const Information = ({
   endTime,
   testResults,
   _reporterOptions: { customInfos = [] },
+  attachInfos
 }: IReportData) => (
   <ExpandContext.Consumer>
     {({ toggleExpand }) => (
@@ -276,6 +278,43 @@ export const Information = ({
                   context={maxWorkers}
                   icon={<CompassFilled />}
                 />
+                <Button
+                  data-sign='UpdateButton'
+                  type='primary'
+                  onClick={() => {
+                    // console.log('File Information');
+                    testResults.forEach((suite) => {
+                      // console.log(`Test Name: ${suite.testFilePath}`);
+                      suite.testResults.forEach((test) => {
+                        // only process failed tests
+                        if( test.status === 'failed') {
+                          // console.log(`Subtest Name: ${test.fullName}, Status: ${test.status}`);
+                          if( attachInfos && attachInfos[suite.testFilePath]) {
+                            const fileInfo = attachInfos[suite.testFilePath];
+                            if( fileInfo && fileInfo[test.fullName]) {
+                              const imageInfo = fileInfo[test.fullName];
+
+                              let generatedFilePath = "";
+                              let goldenFilePath = "";
+                              Object.entries(imageInfo).forEach(([key, value]) => {
+                                if (value.description.startsWith("Golden:")) goldenFilePath = value.filePath;
+                                else if (value.description.startsWith("Generated:")) generatedFilePath = value.filePath;
+                              });
+
+                              // show only the RHS of strings after their common part
+                              let mismatchIndex = getIndexOfDiff(generatedFilePath, goldenFilePath);
+                              console.log(`Copy: ${generatedFilePath.substring(mismatchIndex)}`);
+                              console.log(`To:   ${goldenFilePath.substring(mismatchIndex)}`);
+                            }
+                          }
+                        }
+                      });
+                    });
+
+                  }}>
+                  <FolderFilled />
+                  Update All Results
+                </Button>
               </Col>
               {customInfos &&
                 customInfos.map(({ title, value }) => (
@@ -294,3 +333,31 @@ export const Information = ({
     )}
   </ExpandContext.Consumer>
 );
+
+// get the index of the first difference between two strings
+function getIndexOfDiff(generatedFilePath: string, goldenFilePath: string) {
+  const minLength = Math.min(generatedFilePath.length, goldenFilePath.length);
+  let mismatchIndex = -1;
+
+  for (let i = 0; i < minLength; i++) {
+    if (generatedFilePath[i] !== goldenFilePath[i]) {
+      mismatchIndex = i;
+      break;
+    }
+  }
+
+  if (mismatchIndex === -1 && generatedFilePath.length !== goldenFilePath.length) {
+    mismatchIndex = minLength;
+  }
+
+  // Find the last slash before the mismatch index
+  // - this is to ensure that we only show the part of the path after the last slash
+  const startSection = goldenFilePath.substring(0, mismatchIndex);
+  const lastSlashIndex = Math.max( startSection.lastIndexOf('/'), startSection.lastIndexOf('\\'));
+  if (lastSlashIndex !== -1 && lastSlashIndex < mismatchIndex) {
+    mismatchIndex = lastSlashIndex;
+  }
+
+  return mismatchIndex;
+}
+

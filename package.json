@@ -1,7 +1,7 @@
 {
-  "name": "jest-html-reporters",
+  "name": "dw-jest-html-reporters",
   "license": "MIT",
-  "version": "3.1.7",
+  "version": "3.1.8",
   "description": "Jest test results processor for generating a summary in HTML",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,8 @@
     "test": "yarn tsc -p build && node scripts/test.js",
     "testCi": "yarn tsc -p build && node scripts/test.js --reporters=default",
     "commit": "cz",
-    "pr": "gh pr create"
+    "pr": "gh pr create",
+    "buildpack": "npm run build && npm pack"
   },
   "keywords": [
     "jest",
@@ -63,16 +64,15 @@
     "eslint": "^8.3.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-webpack-plugin": "^3.1.1",
-    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^6.2.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.1.0",
     "html-webpack-plugin": "^5.5.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.4.3",
     "jest-resolve": "^27.4.2",
     "jest-watch-typeahead": "^1.0.0",
     "jump.js": "^1.0.2",
-    "mini-css-extract-plugin": "^2.4.5",
+    "mini-css-extract-plugin": "^2.9.2",
     "normalize.css": "^8.0.1",
     "postcss": "^8.4.4",
     "postcss-flexbugs-fixes": "^5.0.2",
@@ -106,7 +106,6 @@
     "workbox-webpack-plugin": "^6.4.1"
   },
   "dependencies": {
-    "fs-extra": "^10.0.0",
     "open": "^8.0.3"
   },
   "eslintConfig": {

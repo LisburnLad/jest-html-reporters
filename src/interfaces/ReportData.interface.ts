@@ -44,6 +44,8 @@ export interface IReportData extends AggregatedResult {
   // todo add type here.
   attachInfos?: IAttachInfos;
   logInfoMapping: Record<string, TestResult['console']>;
+
+  selectMapping: Record<string, boolean>;
 }
 
 export type ITestItem = TestResult;

@@ -124,6 +124,19 @@ const getColumns = ({ colorToken }: { colorToken: GlobalToken }) => {
           />
         ),
     },
+    {
+      width: '60px',
+      title: 'select',
+      key: 'selection',
+      render: ({ failureMessages, fullName, fileAttachInfos, subGroups }) =>
+        !subGroups && (
+          <Checkbox
+            checked={false}
+            onChange={(e) => {}}
+          >
+        </Checkbox>
+        )
+    },
   ];
   return columns;
 };

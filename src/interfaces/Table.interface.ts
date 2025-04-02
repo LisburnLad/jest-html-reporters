@@ -7,6 +7,7 @@ export interface IMainTableProps {
   globalExpandState: boolean;
   attachInfos?: IReportData['attachInfos'];
   logInfoMapping: IReportData['logInfoMapping'];
+  selectMapping: IReportData['selectMapping'];
 }
 
 export interface IDetailTableItem extends IDetailItem {

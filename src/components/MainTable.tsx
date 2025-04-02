@@ -1,6 +1,6 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 
-import { Table, Tag, theme, Typography } from 'antd';
+import { Checkbox, Table, Tag, theme, Typography } from 'antd';
 import type { GlobalToken } from 'antd/es/theme/interface';
 
 import type { IMainTableProps } from '../interfaces/Table.interface';
@@ -69,6 +69,7 @@ export const renderStatus = ({
   return <div className='main_table_tags'>{tagsInfo}</div>;
 };
 
+
 const renderTime = ({ perfStats: { start, end } }: ITestItem) =>
   getFormatTimeDisplay(start, end);
 
@@ -78,6 +79,7 @@ const getColumns = (
   urlForTestFiles: string | undefined,
   attachInfos: IMainTableProps['attachInfos'],
   logInfoMapping: IMainTableProps['logInfoMapping'],
+  selectMapping: IMainTableProps['selectMapping'],
   colorToken: GlobalToken
 ): ColumnsType<ITestItem> => [
   {
@@ -168,6 +170,18 @@ const getColumns = (
       />
     ),
   },
+  {
+    width: '60px',
+    title: 'Select',
+    key: 'selection',
+    render: ({ testFilePath = '', failureMessage }) => (
+      <Checkbox
+        checked={false}
+        onChange={(e) => selectMapping[testFilePath] = e.target.checked}
+      >
+      </Checkbox>
+    ),
+  },
 ];
 
 export const MainTable = ({
@@ -177,6 +191,7 @@ export const MainTable = ({
   globalExpandState,
   attachInfos,
   logInfoMapping,
+  selectMapping,
 }: IMainTableProps) => {
   const box = useRef<HTMLDivElement>(null);
   const {
@@ -216,6 +231,7 @@ export const MainTable = ({
               _reporterOptions.urlForTestFiles,
               attachInfos,
               logInfoMapping,
+              selectMapping,
               colorToken
             )}
             dataSource={testResults}
